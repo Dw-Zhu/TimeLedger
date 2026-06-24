@@ -61,7 +61,7 @@ public class FinanceController {
         }
     }
 
-    @GetMapping("/bill/list")
+    @GetMapping("/list")
     public Result<List<BillVo>> listBills() {
         // 这里 billService.getUserBills 返回的是 List<BillVo>
         // 对应方法签名的 Result<List<BillVo>>，类型完美对齐

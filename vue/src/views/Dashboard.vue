@@ -104,22 +104,24 @@ const budgetPercentage = computed(() => {
   return pct > 100 ? 100 : pct
 })
 
+// 1. 修改查询列表方法
 const fetchRecords = async () => {
   loading.value = true
   try {
-    const res = await request.get('/api/record/list')
+    const res = await request.get('/api/finance/list')
     records.value = res.data.data || []
   } catch(e) {}
   finally { loading.value = false }
 }
 
+// 2. 修改新增方法
 const handleAddRecord = async () => {
   try {
-    await request.post('/api/record/add', newRecord.value)
+    // 💡 同样将 /api/record/add 修正为 /api/finance/add
+    await request.post('/api/finance/add', newRecord.value)
     ElMessage.success('财务流水同步成功，资产已实时扣减联动！')
     showAddDialog.value = false
     fetchRecords()
-    // 重置表单
     newRecord.value = { type: '支出', category: '', amount: 10, date: new Date().toISOString().split('T')[0], remark: '' }
   } catch(e) {}
 }

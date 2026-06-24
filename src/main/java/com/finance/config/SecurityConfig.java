@@ -38,7 +38,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/user/login", "/user/register",
                                 "/api/user/login", "/api/user/register",
-                                "/api/auth/login", "/api/auth/register"
+                                "/api/auth/login", "/api/auth/register",
+                                "/error"
                         ).permitAll()
                         // 其他所有属于核心记账、日记、预算等接口必须携带有效 Token 访问
                         .anyRequest().authenticated()

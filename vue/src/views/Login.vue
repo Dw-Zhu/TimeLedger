@@ -54,10 +54,18 @@ const rules = {
 const handleSubmit = async () => {
   loading.value = true
   try {
-    const url = isRegister.value ? '/api/user/register' : '/api/user/login'
+    const url = isRegister.value ? '/api/auth/register' : '/api/auth/login'
+
+    // 💡 核心修复：就是在你截图箭头指向的数据发出去之前，把后端缺少的 nickname 字段补齐！
+    if (isRegister.value) {
+      form.nickname = form.username // 直接把输入的 "admin" 同时也作为昵称传给后端
+    }
+
     const res = await request.post(url, form)
     if (!isRegister.value) {
-      userStore.setToken(res.data.data) // 保存 JWT 令牌
+      // 登录成功存储 Token 字符串逻辑...
+      const tokenStr = res.data.data.token
+      userStore.setToken(tokenStr)
       ElMessage.success('拾光凭证校验成功，正在进入个人记账空间...')
       router.push('/')
     } else {
@@ -65,7 +73,7 @@ const handleSubmit = async () => {
       isRegister.value = false
     }
   } catch (e) {
-    // 拦截器已处理异常错误
+    // 拦截器异常处理
   } finally {
     loading.value = false
   }

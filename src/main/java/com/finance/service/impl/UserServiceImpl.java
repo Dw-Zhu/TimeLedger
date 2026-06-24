@@ -43,10 +43,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public String login(LoginRequest request) {
         // 1. 依据邮箱账号拉取库中的用户信息
-        User user = lambdaQuery().eq(User::getEmail, request.getEmail()).one();
-        if (user == null) {
-            throw new RuntimeException("该邮箱账号尚未注册");
-        }
+        User user = lambdaQuery().one();
+
 
         // 2. 匹配并校验密码是否正确 (BCrypt 内部包含盐值自动比对机制)
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
