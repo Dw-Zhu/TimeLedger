@@ -1,0 +1,4 @@
+package com.finance.config;
+
+public class SecurityConfig {
+}

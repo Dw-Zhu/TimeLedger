@@ -1,0 +1,4 @@
+package com.finance.dto;
+
+public class RegisterRequest {
+}
