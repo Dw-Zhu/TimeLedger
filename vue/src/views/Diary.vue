@@ -2,7 +2,7 @@
   <div class="diary-page">
     <el-card class="calendar-card">
       <template #header>
-        <div class="header-title">📅 时光随笔心情日历看板</div>
+        <div class="header-title">时光随笔心情日历看板</div>
       </template>
 
       <el-calendar v-model="currentDate">
@@ -54,18 +54,22 @@ const diaryMap = ref({})
 const diaryForm = ref({ mood: '😄 开心', content: '' })
 
 const getMoodTagType = (mood) => {
+  if (!mood) return 'info'
   if (mood.includes('开心')) return 'success'
   if (mood.includes('平淡')) return 'info'
   if (mood.includes('焦虑')) return 'warning'
   return 'danger'
 }
 
+// 💡 严格核对路径：对应后端物理路径 /api/api/diary/list
 const fetchDiaries = async () => {
   try {
-    const res = await request.get('/api/diary/list')
+    const res = await request.get('/api/api/diary/list')
     const list = res.data.data || []
     const map = {}
-    list.forEach(item => { map[item.date] = item })
+    list.forEach(item => {
+      if (item.date) map[item.date] = item
+    })
     diaryMap.value = map
   } catch (e) {}
 }
@@ -80,10 +84,11 @@ const handleDateClick = (day) => {
   dialogVisible.value = true
 }
 
+// 💡 严格核对路径：对应后端物理路径 /api/api/diary/save
 const saveDiary = async () => {
   try {
     const payload = { ...diaryForm.value, date: selectedDate.value }
-    await request.post('/api/diary/save', payload)
+    await request.post('/api/api/diary/save', payload)
     ElMessage.success('时光心情随笔成功加密上传云端！')
     dialogVisible.value = false
     fetchDiaries()

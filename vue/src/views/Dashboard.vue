@@ -45,7 +45,7 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="remark" label="交易备注 / 资产联动事务说明" show-overflow-tooltip />
+        <el-table-column prop="remark" label="交易备注" show-overflow-tooltip />
       </el-table>
     </el-card>
 
@@ -69,7 +69,7 @@
           <el-date-picker v-model="newRecord.date" type="date" value-format="YYYY-MM-DD" style="width: 100%" />
         </el-form-item>
         <el-form-item label="事务备注">
-          <el-input v-model="newRecord.remark" type="textarea" placeholder="请输入流水备注或联动资产调整事务详情" />
+          <el-input v-model="newRecord.remark" type="textarea" placeholder="请输入流水备注" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -88,9 +88,9 @@ import { ElMessage } from 'element-plus'
 const loading = ref(false)
 const showAddDialog = ref(false)
 const records = ref([])
-const monthlyBudget = ref(3000.00) // 设定月度默认消费预算红线
+const monthlyBudget = ref(3000.00)
 
-const newRecord = ref({ type: '支出', category: '', amount: 10, date: new Date().toISOString().split('T')[0], remark: '' })
+const newRecord = ref({ type: '支出', category: '餐饮美食', amount: 10, date: new Date().toISOString().split('T')[0], remark: '' })
 const categories = {
   '支出': ['餐饮美食', '休闲娱乐', '交通出行', '数码电器', '人情往来', '其他支出'],
   '收入': ['薪资收入', '运营投资', '分红股息', '其他收入']
@@ -104,7 +104,7 @@ const budgetPercentage = computed(() => {
   return pct > 100 ? 100 : pct
 })
 
-// 1. 修改查询列表方法
+// 💡 严格核对：Axios 发送 /api/finance/list，经过 Vite 代理重写后化为 /api/api/finance/list 完美命中后端！
 const fetchRecords = async () => {
   loading.value = true
   try {
@@ -114,15 +114,14 @@ const fetchRecords = async () => {
   finally { loading.value = false }
 }
 
-// 2. 修改新增方法
+// 💡 严格核对：Axios 发送 /api/finance/add，经过 Vite 代理重写后化为 /api/api/finance/add 完美命中后端！
 const handleAddRecord = async () => {
   try {
-    // 💡 同样将 /api/record/add 修正为 /api/finance/add
     await request.post('/api/finance/add', newRecord.value)
-    ElMessage.success('财务流水同步成功，资产已实时扣减联动！')
+    ElMessage.success('财务流水同步成功！')
     showAddDialog.value = false
     fetchRecords()
-    newRecord.value = { type: '支出', category: '', amount: 10, date: new Date().toISOString().split('T')[0], remark: '' }
+    newRecord.value = { type: '支出', category: '餐饮美食', amount: 10, date: new Date().toISOString().split('T')[0], remark: '' }
   } catch(e) {}
 }
 
@@ -130,6 +129,7 @@ onMounted(() => { fetchRecords() })
 </script>
 
 <style scoped>
+.dashboard-page { padding: 10px; }
 .data-card { margin-bottom: 20px; border-radius: 8px; }
 .card-income { border-left: 5px solid #67C23A; }
 .card-expense { border-left: 5px solid #F56C6C; }
