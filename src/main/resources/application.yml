@@ -32,16 +32,16 @@ spring:
     time-zone: GMT+8
     default-property-inclusion: non_null # 过滤掉值为 null 的字段，减少移动端同步流量
 
-# MyBatis-Plus 增强配置
+# MyBatis-Plus 配置项
 mybatis-plus:
   configuration:
-    map-underscore-to-camel-case: true # 自动将下划线（如 user_id）映射为驼峰命名（userId）
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 开发环境下在控制台打印真实执行的 SQL 语句
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
-      id-type: auto # 主键策略使用数据库自增
-      # ⬇️ 新增这一行：指定传统的 XML 映射文件存放位置
-      mapper-locations: classpath:mapper/*.xml
+      id-type: auto
+  # ⬇️ 修正：将其从 db-config 中提出来，保持与 configuration、global-config 平级缩进！
+  mapper-locations: classpath:mapper/*.xml
 
 # 自定义安全认证配置 (第二步编写 JWT 时会直接注入使用)
 timeledger:

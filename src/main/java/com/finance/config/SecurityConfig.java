@@ -34,8 +34,12 @@ public class SecurityConfig {
 
                 // 2. 配置接口访问控制
                 .authorizeHttpRequests(auth -> auth
-                        // 允许匿名访问登录、注册接口
-                        .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                        // 💡 完美闭环白名单：一口气放行所有可能的登录、注册路径
+                        .requestMatchers(
+                                "/user/login", "/user/register",
+                                "/api/user/login", "/api/user/register",
+                                "/api/auth/login", "/api/auth/register"
+                        ).permitAll()
                         // 其他所有属于核心记账、日记、预算等接口必须携带有效 Token 访问
                         .anyRequest().authenticated()
                 );

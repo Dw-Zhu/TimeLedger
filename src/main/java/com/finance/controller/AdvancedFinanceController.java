@@ -7,6 +7,7 @@ import com.finance.entity.DiaryReminder;
 import com.finance.service.BudgetService;
 import com.finance.service.DiaryReminderService;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.finance.service.TargetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class AdvancedFinanceController {
 
     private final BudgetService budgetService;
     private final DiaryReminderService diaryReminderService;
-    private final IService<Target> targetService; // 梦想板目标单表复用 MP 默认基础结构
+    private final TargetService targetService;
 
     // 统一网关提取：从 Spring Security JWT 链条中提取当前登录者的唯一用户 ID
     private Long getCurrentUserId() {
