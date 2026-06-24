@@ -1,0 +1,53 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api # 统一后端 API 请求前缀
+  tomcat:
+    # 开启 Spring Boot 3 对 Java 21 虚拟线程(Virtual Threads) 的原生支持
+    # 高并发处理多端数据（手机/PC）的频繁同步与云端读写请求
+    threads:
+      max: 0 # 设为 0 表示不限制传统线程数，完全交由虚拟线程池调度
+
+spring:
+  application:
+    name: TimeLedger-API
+
+  # 数据库连接池配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/personal_finance?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: zhudawang # ⚠️ 请在此处替换为你的 MySQL 真实密码
+    hikari:
+      pool-name: TimeLedger-HikariCP
+      minimum-idle: 10       # 最小空闲连接数
+      maximum-pool-size: 30  # 依托虚拟线程，可适当放大连接池以提升高吞吐能力
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+
+  # 全局序列化配置：确保前后端时间交互、多端同步时不发生格式变形
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null # 过滤掉值为 null 的字段，减少移动端同步流量
+
+# MyBatis-Plus 增强配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true # 自动将下划线（如 user_id）映射为驼峰命名（userId）
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 开发环境下在控制台打印真实执行的 SQL 语句
+  global-config:
+    db-config:
+      id-type: auto # 主键策略使用数据库自增
+      # ⬇️ 新增这一行：指定传统的 XML 映射文件存放位置
+      mapper-locations: classpath:mapper/*.xml
+
+# 自定义安全认证配置 (第二步编写 JWT 时会直接注入使用)
+timeledger:
+  jwt:
+    # 用于生成签名Token的密钥（开发阶段使用基础串，生产环境应替换为复杂Base64）
+    secret: TimeLedgerSecureJwtKeySecretForPersonalFinanceSystem2026Java21SpringBoot3Vue3Project
+    # Token 有效期（单位：毫秒），这里设置为 7 天，方便移动端/网页端保持免登录同步体验
+    expiration: 604800000
+

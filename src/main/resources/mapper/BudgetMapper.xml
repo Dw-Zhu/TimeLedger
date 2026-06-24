@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.finance.mapper.BudgetMapper">
+
+    <resultMap id="BudgetResultMap" type="com.finance.entity.Budget">
+        <id property="id" column="id" />
+        <result property="userId" column="user_id" />
+        <result property="month" column="month" />
+        <result property="budgetAmount" column="budget_amount" />
+        <result property="incomeTarget" column="income_target" />
+        <result property="createTime" column="create_time" />
+    </resultMap>
+
+    <select id="selectByMonth" resultMap="BudgetResultMap">
+        SELECT id, user_id, month, budget_amount, income_target, create_time
+        FROM finance_budget
+        WHERE user_id = #{userId} AND month = #{month}
+    </select>
+
+    <insert id="insertBudget" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO finance_budget (user_id, month, budget_amount, income_target, create_time)
+        VALUES (#{userId}, #{month}, #{budgetAmount}, #{incomeTarget}, #{createTime})
+    </insert>
+
+    <update id="updateBudget">
+        UPDATE finance_budget
+        SET budget_amount = #{budgetAmount},
+        income_target = #{incomeTarget}
+        WHERE id = #{id} AND user_id = #{userId}
+    </update>
+
+</mapper>
